@@ -7,9 +7,8 @@
 #include<string.h>
 #include<stdio.h>
 #include<math.h>
-#include<cvblob.h>//for blob detection
-
-/////
+#include<cvblob.h>
+/*==============for blob detection==============*/
 
 #include <vector>
 #include <deque>
@@ -21,8 +20,8 @@
 #include <direct.h>//_mkdir()
 
 #include "GaborFR.h"
-using namespace cvb;
 
+using namespace cvb;
 
 #include <iostream>
 	struct pixel_porp{
@@ -55,10 +54,6 @@ Mat gabor_wevlet(Mat);
 Mat gw();
 //for blob detection
 int feature_extraction(IplImage * gray);
-
-
-
-#include "GaborFR.h"
 void GetLocalEntroyImage(IplImage* gray_src,IplImage* entopy_image);
 GaborFR::GaborFR()
 {
@@ -327,9 +322,6 @@ int gabor(Mat I)
 {
 	//Mat M = getGaborKernel(Size(9,9),2*CV_PI,u*CV_PI/8, 2*CV_PI/pow(2,CV_PI*(v+2)/2),1,0);
 	Mat saveM;
-	//s8-4
-	//s1-5
-	//s1
 	//Mat I=imread("H:\\pic\\s1-5.bmp",-1);
 	normalize(I,I,1,0,CV_MINMAX,CV_32F);
 	Mat showM,showMM;Mat M,MatTemp1,MatTemp2;
@@ -353,23 +345,19 @@ int gabor(Mat I)
 
 			GaborFR::getFilterRealImagPart(I,M1,M2,outR,outI);
 			//cout<<"hh1";
-//			M=GaborFR::getPhase(M1,M2);
+/*			M=GaborFR::getPhase(M1,M2);
 //			M=GaborFR::getMagnitude(M1,M2);
 //			M=GaborFR::getPhase(outR,outI);
 //			M=GaborFR::getMagnitude(outR,outI);
- //			M=GaborFR::getMagnitude(outR,outI);
+//			M=GaborFR::getMagnitude(outR,outI);
 // 			MatTemp2=GaborFR::getPhase(outR,outI);
-// 			M=outR;
+*/ 			M=outR;
 			 M=M2;
-			// 		resize(M,M,Size(100,100));
-
-
+// 			resize(M,M,Size(100,100));
 			normalize(M,M,0,255,CV_MINMAX,CV_8U);
 			showM.push_back(M);
 			line=Mat::ones(4,M.cols,M.type())*255;
 			showM.push_back(line);
-
-
 			string s1;
 			s1="F:\\IP_Project\\OCWS\\Hello\\out_img\\";
 			c++;
@@ -382,14 +370,10 @@ int gabor(Mat I)
 			normalize(outR,Mip,0,255,CV_MINMAX,CV_8U);
 			//outR.convertTo(Mip,CV_8U);
 			cout<<endl<<cout<<"Depth : "<< Mip.depth();
-		IplImage ip =Mip;
-
-
-		//cout<<"6st"<<ip.imageData<<endl;
-
+			IplImage ip =Mip;
+			//cout<<"6st"<<ip.imageData<<endl;
 			feature_extraction( &ip);
-
-		//	feature_extraction( &srcEntropy );
+			//feature_extraction( &srcEntropy );
 			//Mat abc=Mat(outEntropy);
 			//imshow(s1, abc);
 		}
@@ -397,19 +381,17 @@ int gabor(Mat I)
 		line=Mat::ones(4,showM.cols,showM.type())*255;
 		showMM.push_back(showM);
 		showMM.push_back(line);
-
 	}
 	showMM=showMM.t();
-
-
 //	bool flag=imwrite("H:\\out.bmp",showMM);
 	imshow("saveMM",showMM);
 	cout<<"hello";
 	waitKey(0);
 	return 0;
 }
-int main(int argc, char ** argv){
 
+
+int main(int argc, char ** argv){
 	CommandLineParser parser(argc, argv, keys);
 	string infile = parser.get<string>("input");
 	string outdir = parser.get<string>("outdir");
@@ -425,22 +407,11 @@ int main(int argc, char ** argv){
 	Mat src_lab;
 	cvtColor(src, src_lab, CV_BGR2Lab);
 
-
-//namedWindow( "Input image", 200 );
-//imshow( "Input image", src );
-
-
-
-
-
+	//namedWindow( "Input image", 200 );
+	//imshow( "Input image", src );
 	Mat roi_image= roi(src);
-
 	Mat gray_image;
-
 	//int x;
-
-
-
 	cvtColor(roi_image, gray_image, CV_BGR2GRAY);
 	cout<<endl<<" "<< gray_image.depth();
 	IplImage ip = gray_image;
@@ -461,83 +432,73 @@ int main(int argc, char ** argv){
 					x=gray_image.at<int>(i/gray_image.cols, i%gray_image.cols);
 					cout<<x<<" ";
 			}
-*/		Mat img_bw= gray_image> 50;//threshold by 50 for disease cluster
-Scalar intensity;
+*/		
+	Mat img_bw= gray_image> 50;//threshold by 50 for disease cluster
+	Scalar intensity;
 
-/*		cv::threshold(gray_image, img_bw, 30, 255, cv::THRESH_BINARY);
-cout<<gray_image.type();
-cout<<" "<<img_bw.type();
+/*	cv::threshold(gray_image, img_bw, 30, 255, cv::THRESH_BINARY);
+	cout<<gray_image.type();
+	cout<<" "<<img_bw.type();
 
 		for(int i=1000; i<gray_image.cols+1000; i++) {
 				x=img_bw.at<int>(i/gray_image.cols, i%gray_image.cols);
 				cout<<x<<" ";
 		}
 	*/
-//namedWindow( "BinaryOfDisease", 200 );
-//imshow( "BinaryOfDisease", img_bw );
+	//namedWindow( "BinaryOfDisease", 200 );
+	//imshow( "BinaryOfDisease", img_bw );
 	Mat after_morph= Mat(roi_image.rows, roi_image.cols, CV_8UC1);
-
 	after_morph=morph_operation(img_bw);
-
 /*	for(int i=0; i<after_morph.cols*after_morph.rows; i++) {
 		x=after_morph.at<int>(i/after_morph.cols, i%after_morph.cols);
 		if(x!=0){
 		//	after_morph.at<Vec3b>(i/after_morph.cols, i%after_morph.cols)[0]=1.0;
 		}
-}
+	}
 
 	namedWindow( "aM", 200 );
 	imshow( "aM", after_morph );
-
-
-
 	 const Mat& mask=Mat();
-
 */
 
 	   Mat cluster1=Mat(roi_image.rows, roi_image.cols, CV_8UC3);
 
 	roi_image.convertTo(roi_image,CV_8UC3);
-Vec3b vec;
+	Vec3b vec;
 
-
-
-
-for(int i=0; i<after_morph.rows; i++) {
+	for(int i=0; i<after_morph.rows; i++) {
 		for(int j=0;j<after_morph.cols;j++){
-				intensity=after_morph.at<uchar>(i,j);
+			intensity=after_morph.at<uchar>(i,j);
 
+			if(intensity[0]!=0){
 
-				if(intensity[0]!=0){
-
-					vec = (ROI_IMG.at<Vec3b>(i,j));
-
-					cluster1.at<Vec3b>(i,j)[0]=vec[0];
-					cluster1.at<Vec3b>(i,j)[1]=vec[1];
-					cluster1.at<Vec3b>(i,j)[2]=vec[2];
+				vec = (ROI_IMG.at<Vec3b>(i,j));
+				cluster1.at<Vec3b>(i,j)[0]=vec[0];
+				cluster1.at<Vec3b>(i,j)[1]=vec[1];
+				cluster1.at<Vec3b>(i,j)[2]=vec[2];
 
 			}
 		}
 	}
-//namedWindow( "DiseasePart", 200 );
-//imshow( "DiseasePart", cluster1);
+	//namedWindow( "DiseasePart", 200 );
+	//imshow( "DiseasePart", cluster1);
 
 	rect cord=blob_detect(after_morph);
 	 Rect cropRect = Rect(cord.minx,cord.miny,cord.maxx-cord.minx,cord.maxy-cord.miny); // ROI in source image
 		   		//Rect cropRect = Rect(100, 100, 255, 255);
-		   		Mat largest_blob=cluster1(cropRect);
-//namedWindow( "largest_blob", 200 );
-//imshow( "largest_blob", largest_blob);
-//cout<<"out";
-Mat gw_image;
-Mat lb_gray;
-cvtColor(largest_blob,lb_gray,CV_RGB2GRAY);
+					Mat largest_blob=cluster1(cropRect);
+	//namedWindow( "largest_blob", 200 );
+	//imshow( "largest_blob", largest_blob);
+	//cout<<"out";
+	Mat gw_image;
+	Mat lb_gray;
+	cvtColor(largest_blob,lb_gray,CV_RGB2GRAY);
 	gabor(lb_gray);
 
 	imwrite( filename, largest_blob);
 
-//namedWindow( "final", CV_WINDOW_AUTOSIZE );
-//imshow( "final", roi_image );
+	//namedWindow( "final", CV_WINDOW_AUTOSIZE );
+	//imshow( "final", roi_image );
 
 
 	waitKey(0);
@@ -553,32 +514,27 @@ Mat roi(Mat img){
 	int crop_row;
 	int crop_col;
 
-
-
 	Mat filtered_image= Mat(img.size(), CV_8UC1);
 	Mat org_image = img.clone();
 
-
-
-
 	bilateralFilter(img, filtered_image, 0, 20.0, 2.0);
 
-//namedWindow( "Filtered image", CV_WINDOW_AUTOSIZE );
-//imshow( "Filtered image", filtered_image );
+	//namedWindow( "Filtered image", CV_WINDOW_AUTOSIZE );
+	//imshow( "Filtered image", filtered_image );
 
 	Mat gray_image;
 	cvtColor( filtered_image, gray_image, CV_BGR2GRAY );
 
-//namedWindow( "After smooth", CV_WINDOW_AUTOSIZE );
-//imshow( "After smooth", gray_image );
+	//namedWindow( "After smooth", CV_WINDOW_AUTOSIZE );
+	//imshow( "After smooth", gray_image );
 
-Mat img_bw;
-threshold( gray_image, img_bw, 140, 255,THRESH_BINARY );
+	Mat img_bw;
+	threshold( gray_image, img_bw, 140, 255,THRESH_BINARY );
 	//Mat img_bw = gray_image> 128;// verify from sir
 
 
-//namedWindow( "Binary", CV_WINDOW_AUTOSIZE );
-//imshow( "Binary", img_bw );
+	//namedWindow( "Binary", CV_WINDOW_AUTOSIZE );
+	//imshow( "Binary", img_bw );
 
 	int row=img_bw.rows;
 	int col=img_bw.cols;
@@ -589,8 +545,6 @@ threshold( gray_image, img_bw, 140, 255,THRESH_BINARY );
 	int i;
 	int j;
 	Scalar intensity;
-
-
 	intensity[0]=255;
 	for( i=0;i<row;i++){
 		for( j=0;j<col;j++){
@@ -677,8 +631,8 @@ threshold( gray_image, img_bw, 140, 255,THRESH_BINARY );
 		//Rect cropRect = Rect(100, 100, 255, 255);
 		Mat roi_image=img(cropRect);
 
-//namedWindow("roi",CV_WINDOW_AUTOSIZE);
-//imshow("roi",roi_image);
+	//namedWindow("roi",CV_WINDOW_AUTOSIZE);
+	//imshow("roi",roi_image);
 
 	ROI_IMG=img(cropRect);
 
@@ -769,14 +723,14 @@ threshold( gray_image, img_bw, 140, 255,THRESH_BINARY );
 		      // }
 
 
-/*
-clustered.convertTo(clustered, CV_8U);
-imshow("clustered", clustered);
-*/
+	/*
+	clustered.convertTo(clustered, CV_8U);
+	imshow("clustered", clustered);
+	*/
 
 
 
-//cluster1.convertTo(cluster1, CV_8UC3);
+	//cluster1.convertTo(cluster1, CV_8UC3);
 
 	pixel_porp cluster1_max_pix;
 	pixel_porp cluster2_max_pix;
@@ -789,7 +743,7 @@ imshow("clustered", clustered);
 
 		pixel_porp *first_min_pix;
 		pixel_porp *second_min_pix;
- Mat* fm,*sm;
+ 	Mat* fm,*sm;
 
 	 if(cluster1_max_pix.max_intensity<cluster2_max_pix.max_intensity){
 		 if(cluster2_max_pix.max_intensity<cluster3_max_pix.max_intensity){
@@ -823,148 +777,134 @@ imshow("clustered", clustered);
 					 }
 				 }
 	 }
-cout<<"FI-"<<cluster1_max_pix.max_intensity<<endl;
-cout<<"SI-"<<cluster2_max_pix.max_intensity<<endl;
-cout<<"TI-"<<cluster3_max_pix.max_intensity<<endl;
-cout<<"FMin-"<<first_min_pix->max_intensity<<endl;
-cout<<"SMin-"<<second_min_pix->max_intensity<<endl;
+	cout<<"FI-"<<cluster1_max_pix.max_intensity<<endl;
+	cout<<"SI-"<<cluster2_max_pix.max_intensity<<endl;
+	cout<<"TI-"<<cluster3_max_pix.max_intensity<<endl;
+	cout<<"FMin-"<<first_min_pix->max_intensity<<endl;
+	cout<<"SMin-"<<second_min_pix->max_intensity<<endl;
 
 
-pixel_porp first_max_pix,second_max_pix;
+	pixel_porp first_max_pix,second_max_pix;
 
-find_max_intensity(*fm, &first_max_pix,1);
-find_max_intensity(*sm, &second_max_pix,1);
+	find_max_intensity(*fm, &first_max_pix,1);
+	find_max_intensity(*sm, &second_max_pix,1);
 
-int ratio;
+	int ratio;
 
-if(first_min_pix->max_intensity>second_min_pix->max_intensity)
-	ratio=first_min_pix->max_intensity/second_min_pix->max_intensity;
-else
-	ratio=second_min_pix->max_intensity/first_min_pix->max_intensity;
+	if(first_min_pix->max_intensity>second_min_pix->max_intensity)
+		ratio=first_min_pix->max_intensity/second_min_pix->max_intensity;
+	else
+		ratio=second_min_pix->max_intensity/first_min_pix->max_intensity;
 
-Mat * outImage;
+	Mat * outImage;
 
-if(ratio>3.5){
-	if((((first_min_pix->pos)>(second_min_pix->pos))||((second_min_pix->pos)>(first_min_pix->pos)))&&((second_max_pix.pos)>(first_max_pix.pos))){
-		outImage=sm;
+	if(ratio>3.5){
+		if((((first_min_pix->pos)>(second_min_pix->pos))||((second_min_pix->pos)>(first_min_pix->pos)))&&((second_max_pix.pos)>(first_max_pix.pos))){
+			outImage=sm;
+		}
+		else outImage=fm;
 	}
 	else outImage=fm;
-}
-else outImage=fm;
 
 
-outImage=fm;
+	outImage=fm;
 	outImage->convertTo(*outImage, CV_8UC3);
 
 	sm->convertTo(*sm, CV_8UC3);
 
 
-/*
-namedWindow( "First min", 200 );
-imshow("First min",*fm);
+	/*
+	namedWindow( "First min", 200 );
+	imshow("First min",*fm);
 
-namedWindow( "Second min", 200 );
-imshow("Second min",*sm);
+	namedWindow( "Second min", 200 );
+	imshow("Second min",*sm);
 
 
-namedWindow( "ROI", 200 );
-imshow("ROI",*outImage);
+	namedWindow( "ROI", 200 );
+	imshow("ROI",*outImage);
 
-namedWindow( "x", CV_WINDOW_AUTOSIZE );
-		imshow( "x", roi_image );
+	namedWindow( "x", CV_WINDOW_AUTOSIZE );
+			imshow( "x", roi_image );
 
+	*/
+	
+
+/*	vector<Mat> bgr_planes;
+	cv::split(cluster1, bgr_planes);
+
+	int histSize = 256;
+
+	  // Set the ranges
+	  float range[] = { 0, 256 } ;
+	  const float* histRange = { range };
+	  bool uniform = true; bool accumulate = false;
+
+	  Mat g_hist;
+
+	  // Compute the histograms:
+	   calcHist( &bgr_planes[1], 1, 0, Mat(), g_hist, 1, &histSize, &histRange, uniform, accumulate );
+
+	  int temp=0;
+	  int count=0;
+	  int pos=-1;
+
+	  for( int i = 1; i < histSize; i++ ){
+		  temp=g_hist.at<float>(i);
+		  if( count<temp) {
+			  count=temp;
+
+			  pos=i;
+		  }
+
+	  }
+	  cout<<cluster3.rows*cluster3.cols<<"** " ;
+	  cout<<count<<" "<<pos;
+
+*/
+
+/*		Mat result=Mat(channels[0]);
+
+
+		double minVal; double maxVal; Point minLoc; Point maxLoc;
+
+		Point matchLoc;
+
+		    minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
+
+		 cout<<"MaxI- "<<maxVal<<" "<<" "<<"MinI- "<< minVal<<endl;
+
+	  	for(int i=10; i<roi_image.cols*25; i++) {
+		 // cout<<channels[0].data[i];
+		  cout<<result.at<Vec3b>(i/roi_image.cols, i%roi_image.cols)<<" ";
+		  cout <<cluster1.at<Vec3b>(i/roi_image.cols, i%roi_image.cols)<<"#";
+		  i=i5;
+		       			      
+		}
 */
 
 
 
 
+	//Mat cls1;
+	//cvtColor(cluster1, cls1, CV_Lab2RGB);
 
-				/*	vector<Mat> bgr_planes;
-					cv::split(cluster1, bgr_planes);
+	//namedWindow( "cluster1", CV_WINDOW_AUTOSIZE );
+	//imshow("cluster1", cluster1);
 
-					int histSize = 256;
+	//cluster2.convertTo(cluster2, CV_8UC3);
+	//namedWindow( "cluster2", CV_WINDOW_AUTOSIZE );
+	//imshow("cluster2", cluster2);
 
-					  // Set the ranges
-					  float range[] = { 0, 256 } ;
-					  const float* histRange = { range };
-					  bool uniform = true; bool accumulate = false;
+	//cluster3.convertTo(cluster3, CV_8UC3);
+	//namedWindow( "cluster3", CV_WINDOW_AUTOSIZE );
+	//imshow("cluster3", cluster3);
 
-					  Mat g_hist;
-
-					  // Compute the histograms:
-					   calcHist( &bgr_planes[1], 1, 0, Mat(), g_hist, 1, &histSize, &histRange, uniform, accumulate );
-
-					  int temp=0;
-					  int count=0;
-					  int pos=-1;
-
-					  for( int i = 1; i < histSize; i++ ){
-						  temp=g_hist.at<float>(i);
-						  if( count<temp) {
-							  count=temp;
-
-							  pos=i;
-						  }
-
-					  }
-					  cout<<cluster3.rows*cluster3.cols<<"** " ;
-					  cout<<count<<" "<<pos;
-
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-					/*		       		 Mat result=Mat(channels[0]);
-
-
-		       		double minVal; double maxVal; Point minLoc; Point maxLoc;
-
-		       		Point matchLoc;
-
-		       		    minMaxLoc( result, &minVal, &maxVal, &minLoc, &maxLoc, Mat() );
-
-		       		 cout<<"MaxI- "<<maxVal<<" "<<" "<<"MinI- "<< minVal<<endl;
-
-		       	  for(int i=10; i<roi_image.cols*25; i++) {
-		       		 // cout<<channels[0].data[i];
-		       		  cout<<result.at<Vec3b>(i/roi_image.cols, i%roi_image.cols)<<" ";
-		       		  cout <<cluster1.at<Vec3b>(i/roi_image.cols, i%roi_image.cols)<<"#";
-		       		  i=i5;
-		       			      }
-*/
-
-
-
-
-//Mat cls1;
-//cvtColor(cluster1, cls1, CV_Lab2RGB);
-
-//namedWindow( "cluster1", CV_WINDOW_AUTOSIZE );
-//imshow("cluster1", cluster1);
-
-//cluster2.convertTo(cluster2, CV_8UC3);
-//namedWindow( "cluster2", CV_WINDOW_AUTOSIZE );
-//imshow("cluster2", cluster2);
-
-//cluster3.convertTo(cluster3, CV_8UC3);
-//namedWindow( "cluster3", CV_WINDOW_AUTOSIZE );
-//imshow("cluster3", cluster3);
-
-		/*	cvSetImageROI(&img2, cropRect);
+	/*	cvSetImageROI(&img2, cropRect);
 
 		cvCopy((IplImage)img, roi_image, NULL); // Copies only crop region
 		cvResetImageROI((IplImage)img);
-*/
+	*/
 	/*	roi_image(crop_row,crop_col,CV_8UC3);
 		 namedWindow( "R image", CV_WINDOW_AUTOSIZE );
 				 imshow( "R image", roi_image );
@@ -986,58 +926,57 @@ namedWindow( "x", CV_WINDOW_AUTOSIZE );
 
 int  find_max_intensity(Mat cluster1, struct pixel_porp *cluster1_max_pix,int flag){
 
-						vector<Mat> bgr_planes;
-						cv::split(cluster1, bgr_planes);
+	vector<Mat> bgr_planes;
+	cv::split(cluster1, bgr_planes);
 
-						int histSize = 256;
+	int histSize = 256;
 
-						  // Set the ranges
-						  float range[] = { 0, 256 } ;
-						  const float* histRange = { range };
-						  bool uniform = true; bool accumulate = false;
+	  // Set the ranges
+	  float range[] = { 0, 256 } ;
+	  const float* histRange = { range };
+	  bool uniform = true; bool accumulate = false;
 
-						  Mat g_hist;
+	  Mat g_hist;
 
-						  // Compute the histograms:
-						   calcHist( &bgr_planes[1], 1, 0, Mat(), g_hist, 1, &histSize, &histRange, uniform, accumulate );
-						  int count=0;
-						  int pos=-1;
-						  if(flag==1){
-							  int temp=0;
-							 for(int i=255;i>=50;i--){
-								 temp=g_hist.at<float>(i);
-								 if(temp!=0){
-									 count=temp;
-									 pos=i;
-									 break;
-								 }
-							 }
+	  // Compute the histograms:
+	   calcHist( &bgr_planes[1], 1, 0, Mat(), g_hist, 1, &histSize, &histRange, uniform, accumulate );
+	  int count=0;
+	  int pos=-1;
+	  if(flag==1){
+		  int temp=0;
+		 for(int i=255;i>=50;i--){
+			 temp=g_hist.at<float>(i);
+			 if(temp!=0){
+				 count=temp;
+				 pos=i;
+				 break;
+			 }
+		 }
 
-						  }
-						  else{
-							  int temp=0;
+	  }
+	  else{
+		  int temp=0;
 
-							  for( int i = 1; i < histSize; i++ ){
-								  temp=g_hist.at<float>(i);
-								  if( count<temp) {
-									  count=temp;
-									  pos=i;
-								  }
-							  }
+		  for( int i = 1; i < histSize; i++ ){
+			  temp=g_hist.at<float>(i);
+			  if( count<temp) {
+				  count=temp;
+				  pos=i;
+			  }
+		  }
 
-						  }
+	  }
 
-						 // cout<<cluster3.rows*cluster3.cols<<"** " ;
-						  cluster1_max_pix->max_intensity=count;
-						  cluster1_max_pix->pos=pos;
-						//  cluster1_max_pix->cluter_pointer=cluster1;
-						  cout<<count<<" "<<pos;
+	 // cout<<cluster3.rows*cluster3.cols<<"** " ;
+	  cluster1_max_pix->max_intensity=count;
+	  cluster1_max_pix->pos=pos;
+	//  cluster1_max_pix->cluter_pointer=cluster1;
+	  cout<<count<<" "<<pos;
 return 0;
 }
 Mat morph_operation(Mat src){
 	/*
 	Mat dila_dst,erod_dst;
-
 
 	 Mat element = getStructuringElement( MORPH_CROSS,
 	                                       Size(3, 3 ),
@@ -1053,11 +992,9 @@ imshow("Dilated", dila_dst);
 namedWindow( "Dila_Erod", 200 );
 imshow("Dila_Erod", erod_dst);
 
-
 	  //	erode( src,  dst, InputArray kernel, Point anchor=Point(-1,-1), int iterations=1, int borderType=BORDER_CONSTANT, const Scalar& borderValue=morphologyDefaultBorderValue() )
 
 	 return erod_dst;
-
 	*/
 	Mat dst;
 	 Mat element = getStructuringElement( MORPH_CROSS,
@@ -1065,22 +1002,19 @@ imshow("Dila_Erod", erod_dst);
 		                                       Point( -1, -1 ) );
 	 const Scalar& borderValue=morphologyDefaultBorderValue();
 	morphologyEx(src, dst, MORPH_CLOSE, element, Point(-1,-1),1,BORDER_CONSTANT,borderValue );
-//namedWindow( "close", 200 );
-//imshow("close", dst);
+	//namedWindow( "close", 200 );
+	//imshow("close", dst);
 	Mat dst1;
 	  element = getStructuringElement( MORPH_CROSS,
 			                                       Size(11, 11 ),
 			                                       Point( -1, -1 ) );
 	morphologyEx(dst, dst1, MORPH_OPEN, element, Point(-1,-1),1,BORDER_CONSTANT,borderValue );
-//namedWindow( "open", 200 );
-//imshow("open", dst1);
+	//namedWindow( "open", 200 );
+	//imshow("open", dst1);
 	return dst1;
-
 }
 
 rect blob_detect(Mat src1){
-
-
 
 /*
 	cv::SimpleBlobDetector::Params params;
@@ -1122,26 +1056,23 @@ rect blob_detect(Mat src1){
 			cout<<keypoints[i].size<<endl;
 
 			for(int i=Y;i<Y+5;i++){
-			          					for(int j=X;j<X+5;j++){
-			          						src.at<uchar>(i,j)=0;
+		for(int j=X;j<X+5;j++){
+			src.at<uchar>(i,j)=0;
 
-			          					}
-			          				}
-
-
+			}
+		}
 	}
 	cout<<"largest blob"<<endl;
-		cout<<x<<" "<<y<<"size- "<<size<<endl;
+	cout<<x<<" "<<y<<"size- "<<size<<endl;
           cout<<src.rows<<" "<<src.cols<<endl;
           for(int i=y;i<y+20;i++){
-          					for(int j=x;j<x+20;j++){
-          						src.at<uchar>(i,j)=0;
+          	for(int j=x;j<x+20;j++){
+          		src.at<uchar>(i,j)=0;
 
-          					}
-          				}
-
-		namedWindow( "blb", 200 );
-		imshow("blb", src);
+          		}
+          	}
+	namedWindow( "blb", 200 );
+	imshow("blb", src);
 
 	return src;
 	*/
@@ -1161,12 +1092,11 @@ rect blob_detect(Mat src1){
 		 cvFilterByLabel(blobs, label);
 
 		}
-//cout<<endl<<label;
-int minx,miny,maxx,maxy;
-rect cord;
-for (CvBlobs::const_iterator it=blobs.begin(); it!=blobs.end(); ++it)
+	//cout<<endl<<label;
+	int minx,miny,maxx,maxy;
+	rect cord;
+	for (CvBlobs::const_iterator it=blobs.begin(); it!=blobs.end(); ++it)
 	   {
-
 	   //  cout << it->second->minx<<" "<<it->second->miny<<it->second->maxx<<" "<<it->second->maxy<< endl;
 	     cord.minx=it->second->minx;
 	     cord.miny=it->second->miny;
@@ -1174,23 +1104,17 @@ for (CvBlobs::const_iterator it=blobs.begin(); it!=blobs.end(); ++it)
 	     cord.maxy=it->second->maxy;
 	   }
 
-
-
-
-	 //  cvb::cvFilterLabels (imgIn, IplImage *imgOut, const CvBlobs &blobs)
+	//  cvb::cvFilterLabels (imgIn, IplImage *imgOut, const CvBlobs &blobs)
 	//  IplImage *imgOut2;
 	//   cvRenderBlobs(labelImg, blobs, &src, imgOut);
-	 // cvb::cvFilterLabels (imgOut,imgOut2,blobs);
+	// cvb::cvFilterLabels (imgOut,imgOut2,blobs);
 
 
-//  cvNamedWindow("blobed",200);
-//  imshow("blobed", largest_blob);
-	  // cvShowImage("blobed",largest_blob);
-
-
+	//  cvNamedWindow("blobed",200);
+	//  imshow("blobed", largest_blob);
+	// cvShowImage("blobed",largest_blob);
 
 /*	   //unsigned int i = 0;
-
 	   // Render contours:
 	   cout<<"hello2";
 	   for (CvBlobs::const_iterator it=blobs.begin(); it!=blobs.end(); ++it)
